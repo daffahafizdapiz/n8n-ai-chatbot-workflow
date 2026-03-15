@@ -1,0 +1,159 @@
+{
+  "name": "Tugas 2",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi there! 👋\nMy name is Pizboy. How can I assist you today?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "dcf579e7-7c4e-4eb8-9175-dac64aa194c4",
+      "name": "When chat message received",
+      "webhookId": "b5cb650c-1eac-44f4-92e6-35ac2d55a2c5"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Kamu adalah chatbot informasi tempat wisata di Indonesia.\n\nTugasmu membantu pengguna mengetahui informasi wisata seperti:\n- nama tempat wisata\n- lokasi\n- deskripsi\n- harga tiket masuk.\n\nGunakan data dari tool:\n\"Get row(s) in sheet in Google Sheets\".\n\nJika pengguna bertanya tentang tempat wisata, berikan informasi yang tersedia pada tabel.\n\nJika data tidak ditemukan, jawab:\n\"Maaf, informasi wisata yang Anda cari belum tersedia.\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "4d2cb3f6-b9c5-47ce-9adc-2a64307b98bb",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "ba95bf4e-6916-4b58-9532-e1036738df57",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "qNqLA0RiWMTcDexO",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        208
+      ],
+      "id": "1e7e2942-1640-456e-9b26-26bdc7e7da36",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1tNtTER78J-1a6ADURGP_Gv6_ZcFP8LJ4llJTqENo9sE",
+          "mode": "list",
+          "cachedResultName": "Data Wisata Indonesia",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tNtTER78J-1a6ADURGP_Gv6_ZcFP8LJ4llJTqENo9sE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tNtTER78J-1a6ADURGP_Gv6_ZcFP8LJ4llJTqENo9sE/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        368,
+        208
+      ],
+      "id": "6e4524d6-b61d-403b-b238-ed67ffa70192",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "sItDZBzLuH9NgpBB",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "eeb0f2fd-38d5-46ea-8675-c794e94f8119",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fe0c0944fafda11d615d143a7c84887bea7d2944fbf0d43acb1ca52613a71979"
+  },
+  "id": "0QxOVRqrpCS2ySyj",
+  "tags": []
+}
