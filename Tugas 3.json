@@ -1,0 +1,157 @@
+{
+  "name": "Tugas 3",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f18a9412-5e52-4f9b-b19e-cff827597822",
+      "name": "When chat message received",
+      "webhookId": "9be9d3c3-799a-4766-ac5a-6adb4696200c"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Kamu adalah chatbot AI yang membantu pengguna menjawab pertanyaan tentang produk pelatihan dan harga.\n\nKamu WAJIB menggunakan tool Google Sheets untuk mengambil data, dan tidak boleh menjawab tanpa data dari tool.\n\nGunakan data dari Google Sheets sebagai satu-satunya sumber informasi.\n\nInstruksi:\n1. Jika user bertanya tentang daftar pelatihan atau produk:\n   - Gunakan tool Google Sheets untuk mengambil semua data\n   - Tampilkan dalam bentuk list\n\n2. Jika user bertanya tentang harga produk tertentu:\n   - Cari produk tersebut di data Google Sheets\n   - Tampilkan nama produk dan harganya\n\n3. Jika user bertanya produk termurah atau termahal:\n   - Bandingkan harga dari data\n   - Berikan jawaban yang sesuai\n\n4. Jika produk tidak ditemukan:\n   - Jawab dengan sopan bahwa data tidak tersedia\n\n5. Format jawaban:\n   - Gunakan bahasa Indonesia yang jelas dan ramah\n   - Jika menampilkan banyak data, gunakan format list bernomor\n   - Tampilkan harga dalam format: Rp500.000\n\nContoh format jawaban:\n\nBerikut daftar pelatihan:\n1. Pelatihan Python Dasar - Rp500.000\n2. Pelatihan Data Science - Rp1.200.000\n\nAturan tambahan:\n- Jangan mengarang jawaban\n- Jangan menjawab di luar data Google Sheets\n- Selalu prioritaskan penggunaan tool"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "48b513c1-7d38-459f-acb9-a752adfabe9a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        112,
+        192
+      ],
+      "id": "ff9180ad-310c-48d1-800a-2181e40bc843",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hUSRhSeGJJ1qakQL",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        272,
+        192
+      ],
+      "id": "dd0ce11d-2df5-4780-b54f-14cad29cd064",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1T_Kzq1d6aS3JfQG6bXcbjJGHQqZ8f7B-F1xkhKQC8ac",
+          "mode": "list",
+          "cachedResultName": "data_produk",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1T_Kzq1d6aS3JfQG6bXcbjJGHQqZ8f7B-F1xkhKQC8ac/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 568846799,
+          "mode": "list",
+          "cachedResultName": "data_produk",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1T_Kzq1d6aS3JfQG6bXcbjJGHQqZ8f7B-F1xkhKQC8ac/edit#gid=568846799"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        464,
+        176
+      ],
+      "id": "18d266a8-548d-4005-aaed-01e23b43d47b",
+      "name": "get_produk_pelatihan",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CDsQPTtbwFNvOgma",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_produk_pelatihan": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "90423002-ad47-4583-a72f-4c5fcfe072ee",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9bd720895f81b5640f2bbae29b40a9409dcd715d19a506ab3892432d23e24998"
+  },
+  "id": "6k9GEo1JxRRyZTgB",
+  "tags": []
+}
